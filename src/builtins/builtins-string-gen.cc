@@ -131,6 +131,7 @@ TNode<IntPtrT> StringBuiltinsAssembler::SearchOneByteInOneByteString(
 void StringBuiltinsAssembler::GenerateStringEqual(TNode<String> left,
                                                   TNode<String> right,
                                                   TNode<IntPtrT> length) {
+  Print("StringBuiltinsAssembler::GenerateStringEqual");
   TVARIABLE(String, var_left, left);
   TVARIABLE(String, var_right, right);
   Label if_equal(this), if_notequal(this), if_indirect(this, Label::kDeferred),
@@ -437,6 +438,7 @@ TNode<String> StringBuiltinsAssembler::AllocateConsString(TNode<Uint32T> length,
                                                           TNode<String> left,
                                                           TNode<String> right) {
   // Added string can be a cons string.
+  Print("AllocateConsString");
   Comment("Allocating ConsString");
   TVARIABLE(String, first, left);
   TNode<Int32T> left_instance_type = LoadInstanceType(left);
@@ -484,6 +486,7 @@ TNode<String> StringBuiltinsAssembler::AllocateConsString(TNode<Uint32T> length,
 TNode<String> StringBuiltinsAssembler::StringAdd(
     TNode<ContextOrEmptyContext> context, TNode<String> left,
     TNode<String> right) {
+  Print("StringBuiltinsAssembler::StringAdd");
   CSA_DCHECK(this, IsZeroOrContext(context));
 
   TVARIABLE(String, result);

@@ -142,6 +142,7 @@ macro AddStringLength(
   try {
     const length: intptr = TryIntPtrAdd(lenA, lenB) otherwise IfOverflow;
     if (length > kStringMaxLength) goto IfOverflow;
+    Print("AddStringLength Length", Convert<uintptr>(length));
     return length;
   } label IfOverflow deferred {
     ThrowInvalidStringLength(context);
@@ -312,10 +313,13 @@ macro BufferJoin(implicit context: Context)(buffer: Buffer,
   }
 
   const length: uint32 = Convert<uint32>(Unsigned(buffer.totalStringLength));
+  Print('BufferJoin length', Convert<uintptr>(length));
   const r: String = buffer.isOneByte ? AllocateSeqOneByteString(length) :
                                        AllocateSeqTwoByteString(length);
-  return CallJSArrayArrayJoinConcatToSequentialString(
+  const result: String = CallJSArrayArrayJoinConcatToSequentialString(
       buffer.fixedArray, buffer.index, sep, r);
+  Print('result', result);
+  return result;
 }
 
 transitioning macro ArrayJoinImpl<T: type>(
@@ -373,6 +377,7 @@ transitioning macro ArrayJoinImpl<T: type>(
     }
 
     // d. Set R to the string-concatenation of R and next.
+    // Print('buffer.Add next', next);
     buffer.Add(next, nofSeparators, separatorLength);
     nofSeparators = 0;
   }

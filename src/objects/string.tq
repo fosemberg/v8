@@ -230,6 +230,7 @@ extern macro IsSequentialString(String): bool;
 
 // Corresponds to String::SlowFlatten in the C++ runtime.
 builtin StringSlowFlatten(cons: ConsString): String {
+  Print('StringSlowFlatten ConsString');
   // TurboFan can create cons strings with empty first parts. Make sure the
   // cons shape is canonicalized by the end of this function (either here, if
   // returning early, or below). Note this case is very rare in practice.
@@ -262,6 +263,7 @@ builtin StringSlowFlatten(cons: ConsString): String {
 
 // Corresponds to String::Flatten in the C++ runtime.
 macro Flatten(string: String): String {
+  Print('Flatten String');
   typeswitch (string) {
     case (cons: ConsString): {
       return Flatten(cons);
@@ -276,6 +278,7 @@ macro Flatten(string: String): String {
   }
 }
 macro Flatten(cons: ConsString): String {
+  Print('Flatten ConsString');
   if (cons.IsFlat()) return cons.first;
   return StringSlowFlatten(cons);
 }

@@ -712,6 +712,7 @@ template <template <typename> typename HandleType>
   requires(std::is_convertible_v<HandleType<String>, DirectHandle<String>>)
 V8_EXPORT_PRIVATE HandleType<String> String::SlowFlatten(
     Isolate* isolate, HandleType<ConsString> cons, AllocationType allocation) {
+  PrintF("String::SlowFlatten\n");
   DCHECK(!cons->IsFlat());
   DCHECK_NE(cons->second()->length(), 0);  // Equivalent to !IsFlat.
   DCHECK(!HeapLayout::InAnySharedSpace(*cons));
@@ -807,6 +808,7 @@ template <typename T, template <typename> typename HandleType>
   requires(std::is_convertible_v<HandleType<T>, DirectHandle<String>>)
 HandleType<String> String::Flatten(Isolate* isolate, HandleType<T> string,
                                    AllocationType allocation) {
+  PrintF("String::Flatten\n");
   DisallowGarbageCollection no_gc;  // Unhandlified code.
   Tagged<String> s = *string;
   StringShape shape(s);
