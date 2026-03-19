@@ -437,6 +437,8 @@ TNode<String> StringBuiltinsAssembler::AllocateConsString(TNode<Uint32T> length,
                                                           TNode<String> left,
                                                           TNode<String> right) {
   // Added string can be a cons string.
+  Print("[Phase 2: AllocateConsString] left_len", LoadStringLengthAsWord32(left));
+  Print("[Phase 2: AllocateConsString] right_len", LoadStringLengthAsWord32(right));
   Comment("Allocating ConsString");
   TVARIABLE(String, first, left);
   TNode<Int32T> left_instance_type = LoadInstanceType(left);
@@ -484,6 +486,8 @@ TNode<String> StringBuiltinsAssembler::AllocateConsString(TNode<Uint32T> length,
 TNode<String> StringBuiltinsAssembler::StringAdd(
     TNode<ContextOrEmptyContext> context, TNode<String> left,
     TNode<String> right) {
+  Print("[Phase 1: StringAdd] left_len", LoadStringLengthAsWord32(left));
+  Print("[Phase 1: StringAdd] right_len", LoadStringLengthAsWord32(right));
   CSA_DCHECK(this, IsZeroOrContext(context));
 
   TVARIABLE(String, result);

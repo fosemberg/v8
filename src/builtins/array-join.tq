@@ -188,6 +188,7 @@ struct Buffer {
 
     this.totalStringLength =
         AddStringLength(this.totalStringLength, str.length_intptr);
+    Print("[Phase 1: Collect] Buffer.Add element length", Convert<uintptr>(str.length_intptr));
     // String comparison is expensive, so we only check for pointer equality
     // (i.e. only works for internalized strings).
     if (TaggedEqual(str, this.lastString)) {
@@ -309,6 +310,7 @@ macro NewBuffer(len: uintptr, sep: String): Buffer {
       len >= kMaxBufferChunkSize ? kMaxBufferChunkSize : Signed(len + 1);
   dcheck(cappedBufferSize > 0);
   const chunk = AllocateZeroedFixedArray(cappedBufferSize);
+  Print("[Phase 1: Collect] NewBuffer capacity", Convert<uintptr>(cappedBufferSize));
   chunk.objects[0] = Undefined;  // next chunk
   return Buffer{
     head: chunk,
@@ -348,10 +350,16 @@ macro BufferJoin(implicit context: Context)(buffer: Buffer,
   }
 
   const length: uint32 = Convert<uint32>(Unsigned(buffer.totalStringLength));
+  Print("");
+  Print("[Phase 2: Allocate] SeqString total length", Convert<uintptr>(length));
   const r: String = buffer.isOneByte ? AllocateSeqOneByteString(length) :
                                        AllocateSeqTwoByteString(length);
-  return CallJSArrayArrayJoinConcatToSequentialString(
+  const result: String = CallJSArrayArrayJoinConcatToSequentialString(
       buffer.head, buffer.index, sep, r);
+
+  Print("[Phase 3: Copy] result:");
+  PrintStringSimple(result);
+  return result;
 }
 
 transitioning macro FastArrayJoin(
@@ -770,6 +778,7 @@ transitioning macro CycleProtectedArrayJoin<T: type>(
 // https://tc39.github.io/ecma262/#sec-array.prototype.join
 transitioning javascript builtin ArrayPrototypeJoin(
     js-implicit context: NativeContext, receiver: JSAny)(...arguments): JSAny {
+  Print("=== Array.prototype.join ===");
   const sepObj: JSAny = arguments[0];
 
   // 1. Let O be ? ToObject(this value).

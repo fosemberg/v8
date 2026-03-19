@@ -4265,11 +4265,14 @@ void WriteChunkListToFlat(Tagged<FixedArray> chunk_list_head,
 #ifdef DEBUG
   Tagged<FixedArray> prev_chunk = GetReadOnlyRoots().empty_fixed_array();
 #endif
+  uint32_t chunk_index = 0;
   while (true) {
     Tagged<Object> maybe_next_chunk = chunk->get(0);
     bool is_last_chunk = IsUndefined(maybe_next_chunk);
     uint32_t chunk_len = chunk->ulength().value();
     uint32_t length = is_last_chunk ? last_chunk_length : chunk_len;
+    PrintF("[Phase 3: Copy] processing chunk #%u, %u elements\n",
+           chunk_index++, length - 1);
     CHECK_GT(length, 0);
     CHECK_LE(length, chunk_len);
 
@@ -4359,6 +4362,8 @@ void WriteChunkListToFlat(Tagged<FixedArray> chunk_list_head,
         DCHECK(IsString(element));
         Tagged<String> string = Cast<String>(element);
         const uint32_t string_length = string->length();
+        PrintF("[Phase 3: Copy]   WriteToFlat: %u bytes\n",
+               string_length);
 
         DCHECK(string_length == 0 || sink < sink_end);
         String::WriteToFlat(string, sink, 0, string_length);
@@ -4398,6 +4403,9 @@ Address JSArray::ArrayJoinConcatToSequentialString(
          StringShape(dest).IsSequentialTwoByte());
 
   uint32_t last_chunk_length = static_cast<uint32_t>(raw_last_chunk_length);
+  PrintF("\n[Phase 3: Copy] dest_length=%d, encoding=%s\n",
+         dest->length(),
+         StringShape(dest).IsSequentialOneByte() ? "OneByte" : "TwoByte");
   if (StringShape(dest).IsSequentialOneByte()) {
     WriteChunkListToFlat(chunk_list_head, last_chunk_length, separator,
                          Cast<SeqOneByteString>(dest)->GetChars(no_gc),

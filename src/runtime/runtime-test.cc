@@ -1364,7 +1364,7 @@ RUNTIME_FUNCTION(Runtime_DebugPrintGeneric) {
 
   switch (value_type) {
     case DebugPrintValueType::kWord32: {
-      PrintF(output_stream, "0x%" PRIx32 "\n", static_cast<uint32_t>(value));
+      PrintF(output_stream, "%" PRIu32 "\n", static_cast<uint32_t>(value));
       break;
     }
     case DebugPrintValueType::kWord64: {
@@ -1402,7 +1402,6 @@ RUNTIME_FUNCTION(Runtime_DebugPrintGeneric) {
           uint16_t character = stream.GetNext();
           PrintF(output_stream, "%c", character);
         }
-        PrintF(output_stream, "\n");
         fflush(output_stream);
       } else {
         Tagged<MaybeObject> maybe_object(tagged);
@@ -1455,10 +1454,10 @@ RUNTIME_FUNCTION(Runtime_DebugPrintWord) {
 
   if (!IsSmi(args[4]) || (Cast<Smi>(args[4]).value() == fileno(stderr))) {
     StderrStream os;
-    os << "0x" << std::hex << value << std::dec << std::endl;
+    os << value << std::endl;
   } else {
     StdoutStream os;
-    os << "0x" << std::hex << value << std::dec << std::endl;
+    os << value << std::endl;
   }
   return ReadOnlyRoots(isolate).undefined_value();
 }

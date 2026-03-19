@@ -888,6 +888,8 @@ V8_EXPORT_PRIVATE HandleType<String> String::SlowFlatten(
   DCHECK_EQ(length, cons->length());
   DCHECK_EQ(is_one_byte_representation, cons->IsOneByteRepresentation());
   DCHECK(AllowGarbageCollection::IsAllowed());
+  PrintF("[Phase 3: Flatten] allocating %s SeqString, length=%u\n",
+         is_one_byte_representation ? "OneByte" : "TwoByte", length);
 
   HandleType<SeqString> result;
   if (is_one_byte_representation) {
@@ -955,6 +957,7 @@ HandleType<String> String::Flatten(Isolate* isolate, HandleType<T> string,
   if (shape.IsCons()) {
     DCHECK(!HeapLayout::InAnySharedSpace(s));
     Tagged<ConsString> cons = Cast<ConsString>(s);
+    PrintF("\n[Phase 3: Flatten] ConsString total_length=%d\n", s->length());
     if (!cons->IsFlat()) {
       AllowGarbageCollection yes_gc;
       DCHECK_EQ(*string, s);

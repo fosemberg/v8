@@ -1050,7 +1050,7 @@ V8_OBJECT class ConsString : public String {
   // Prints the entire cons tree.
   void PrintTree();
 
-  // Minimum length for a cons string.
+  // Minimum length for a cons string. <---
   static const uint32_t kMinLength = 13;
 
   // Expose these for convenience since not all classes can be friends (classes
