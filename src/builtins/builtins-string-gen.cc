@@ -531,6 +531,7 @@ TNode<String> StringBuiltinsAssembler::StringAdd(
     BIND(&non_cons);
 
     Comment("Full string concatenate");
+    Print("[Phase 1: StringAdd] Full string concatenate");
     TNode<Int32T> left_instance_type = LoadInstanceType(var_left.value());
     TNode<Int32T> right_instance_type = LoadInstanceType(var_right.value());
 
